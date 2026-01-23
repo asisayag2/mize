@@ -4,10 +4,13 @@
 nixPkgs = ["nodejs_20", "openssl"]
 
 [phases.install]
-cmds = ["npm ci --include=dev"]
+cmds = ["npm install"]
 
 [phases.build]
 cmds = ["npm run build"]
 
 [start]
 cmd = "npm run start"
+
+[variables]
+NPM_CONFIG_PRODUCTION = "false"
