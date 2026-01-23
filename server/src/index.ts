@@ -84,4 +84,3 @@ process.on('SIGTERM', async () => {
 
 export { prisma };
 
-# trigger
