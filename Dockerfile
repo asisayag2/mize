@@ -36,7 +36,7 @@ COPY package*.json ./
 COPY client/package*.json ./client/
 COPY server/package*.json ./server/
 
-# Copy Prisma schema (needed for postinstall)
+# Copy Prisma schema (needed for postinstall and migrations)
 COPY server/prisma ./server/prisma
 
 # Install production dependencies only
@@ -48,6 +48,10 @@ COPY --from=builder /app/client/dist ./client/dist
 # Copy built server
 COPY --from=builder /app/server/dist ./server/dist
 
+# Copy startup script
+COPY start.sh ./start.sh
+RUN chmod +x ./start.sh
+
 # Set environment
 ENV NODE_ENV=production
 ENV PORT=3001
@@ -55,8 +59,8 @@ ENV PORT=3001
 EXPOSE 3001
 
 # Health check
-HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
+HEALTHCHECK --interval=30s --timeout=10s --start-period=10s --retries=3 \
   CMD wget --no-verbose --tries=1 --spider http://localhost:3001/health || exit 1
 
-# Start the server
-CMD ["npm", "run", "start"]
+# Start with migration
+CMD ["./start.sh"]
