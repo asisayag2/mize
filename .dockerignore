@@ -1,0 +1,30 @@
+# Dependencies
+node_modules
+*/node_modules
+
+# Build outputs (will be built in Docker)
+dist
+*/dist
+client/dist
+server/dist
+
+# Development files
+.git
+.gitignore
+.env*
+*.md
+.vscode
+.idea
+
+# Test files
+coverage
+server/coverage
+**/*.test.ts
+**/tests
+
+# Media files
+Media
+
+# Logs
+*.log
+npm-debug.log*
