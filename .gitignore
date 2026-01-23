@@ -26,3 +26,10 @@ npm-debug.log*
 server/prisma/*.db
 server/prisma/*.db-journal
 
+
+# Test coverage
+coverage/
+server/coverage/
+
+# Media files (large assets - upload to Cloudinary instead)
+Media/
