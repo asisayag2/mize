@@ -1,0 +1,90 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Contender {
+  id            String   @id @default(uuid())
+  nickname      String
+  isActive      Boolean  @default(true)
+  imagePublicId String
+  videos        Json     @default("[]") // Array of {title: string, publicId: string}
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  loves          Love[]
+  guesses        Guess[]
+  voteSelections VoteSelection[]
+}
+
+model Love {
+  id              String   @id @default(uuid())
+  contenderId     String
+  deviceToken     String
+  fingerprintHash String
+  createdAt       DateTime @default(now())
+
+  contender Contender @relation(fields: [contenderId], references: [id], onDelete: Cascade)
+
+  @@unique([contenderId, deviceToken])
+  @@index([fingerprintHash])
+}
+
+model Guess {
+  id              String   @id @default(uuid())
+  contenderId     String
+  displayName     String
+  guessText       String
+  deviceToken     String
+  fingerprintHash String
+  createdAt       DateTime @default(now())
+
+  contender Contender @relation(fields: [contenderId], references: [id], onDelete: Cascade)
+
+  @@index([contenderId])
+}
+
+model VoteCycle {
+  id              String    @id @default(uuid())
+  startAt         DateTime
+  endAt           DateTime
+  closedAt        DateTime?
+  maxVotesPerUser Int       @default(3)
+  createdAt       DateTime  @default(now())
+
+  votes Vote[]
+
+  @@index([startAt, endAt])
+}
+
+model Vote {
+  id              String   @id @default(uuid())
+  cycleId         String
+  displayName     String
+  deviceToken     String
+  fingerprintHash String
+  createdAt       DateTime @default(now())
+
+  cycle      VoteCycle       @relation(fields: [cycleId], references: [id], onDelete: Cascade)
+  selections VoteSelection[]
+
+  @@unique([cycleId, deviceToken])
+  @@index([cycleId, fingerprintHash])
+}
+
+model VoteSelection {
+  id          String @id @default(uuid())
+  voteId      String
+  contenderId String
+
+  vote      Vote      @relation(fields: [voteId], references: [id], onDelete: Cascade)
+  contender Contender @relation(fields: [contenderId], references: [id], onDelete: Cascade)
+
+  @@index([voteId])
+  @@index([contenderId])
+}
+

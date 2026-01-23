@@ -1,0 +1,125 @@
+.splash-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-xl);
+  position: relative;
+  overflow: hidden;
+}
+
+.splash-content {
+  text-align: center;
+  max-width: 400px;
+  width: 100%;
+  animation: fadeIn 0.5s ease;
+}
+
+/* Logo */
+.splash-logo {
+  margin-bottom: var(--spacing-2xl);
+}
+
+.logo-mask {
+  font-size: 5rem;
+  margin-bottom: var(--spacing-md);
+  animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+.splash-title {
+  font-size: 3.5rem;
+  font-weight: 800;
+  background: var(--color-accent-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: var(--spacing-sm);
+}
+
+.splash-subtitle {
+  color: var(--color-text-secondary);
+  font-size: 1.125rem;
+}
+
+/* Form */
+.splash-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.splash-label {
+  font-size: 1.25rem;
+  font-weight: 500;
+  color: var(--color-text-primary);
+}
+
+.splash-input {
+  font-size: 1.125rem;
+  text-align: center;
+}
+
+.splash-error {
+  color: var(--color-error);
+  font-size: 0.875rem;
+}
+
+.splash-btn {
+  margin-top: var(--spacing-md);
+}
+
+/* Decorations */
+.splash-decoration {
+  position: fixed;
+  pointer-events: none;
+}
+
+.decoration-note,
+.decoration-star,
+.decoration-mic {
+  position: fixed;
+  font-size: 2rem;
+  opacity: 0.3;
+  animation: drift 20s linear infinite;
+}
+
+.decoration-note {
+  top: 15%;
+  right: 10%;
+  animation-delay: 0s;
+}
+
+.decoration-star {
+  top: 60%;
+  left: 8%;
+  animation-delay: 5s;
+}
+
+.decoration-mic {
+  bottom: 20%;
+  right: 15%;
+  animation-delay: 10s;
+}
+
+@keyframes drift {
+  0% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-20px) rotate(10deg); }
+  100% { transform: translateY(0) rotate(0deg); }
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+  .splash-title {
+    font-size: 2.5rem;
+  }
+  
+  .logo-mask {
+    font-size: 4rem;
+  }
+}
+

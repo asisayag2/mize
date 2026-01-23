@@ -1,0 +1,165 @@
+.contender-card {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  transition: transform var(--transition-normal), box-shadow var(--transition-normal);
+}
+
+.contender-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg), var(--shadow-glow);
+}
+
+/* Image */
+.contender-image-container {
+  position: relative;
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+}
+
+.contender-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform var(--transition-slow);
+}
+
+.contender-card:hover .contender-image {
+  transform: scale(1.05);
+}
+
+.contender-image-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-bg-secondary);
+  font-size: 4rem;
+}
+
+.contender-inactive-badge {
+  position: absolute;
+  top: var(--spacing-md);
+  right: var(--spacing-md);
+  background: rgba(0, 0, 0, 0.8);
+  color: var(--color-text-secondary);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: var(--radius-sm);
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+/* Love counter badge on image */
+.love-counter-badge {
+  position: absolute;
+  bottom: var(--spacing-md);
+  left: 50%;
+  transform: translateX(-50%);
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.9), rgba(220, 38, 38, 0.9));
+  color: white;
+  padding: var(--spacing-xs) var(--spacing-md);
+  border-radius: var(--radius-full);
+  font-size: 0.875rem;
+  font-weight: 600;
+  backdrop-filter: blur(4px);
+  box-shadow: 0 2px 8px rgba(239, 68, 68, 0.4);
+  animation: pulse-love 2s ease-in-out infinite;
+}
+
+.love-counter-text {
+  white-space: nowrap;
+}
+
+@keyframes pulse-love {
+  0%, 100% {
+    transform: translateX(-50%) scale(1);
+  }
+  50% {
+    transform: translateX(-50%) scale(1.05);
+  }
+}
+
+/* Content */
+.contender-content {
+  padding: var(--spacing-md);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.contender-nickname {
+  font-size: 1.25rem;
+  font-weight: 600;
+  text-align: center;
+  background: var(--color-accent-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Videos */
+.contender-videos {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.video-link {
+  background: var(--color-bg-secondary);
+  border: 1px solid var(--color-border);
+  color: var(--color-text-secondary);
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-radius: var(--radius-md);
+  font-family: var(--font-family);
+  font-size: 0.875rem;
+  text-align: right;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.video-link:hover {
+  background: var(--color-bg-card-hover);
+  color: var(--color-accent-primary);
+  border-color: var(--color-accent-primary);
+}
+
+/* Actions */
+.contender-actions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+  margin-top: auto;
+}
+
+/* Love button styles */
+.btn-love {
+  transition: all var(--transition-fast);
+}
+
+.btn-love.loved {
+  background: linear-gradient(135deg, #ef4444, #dc2626);
+  border-color: #ef4444;
+  color: white;
+}
+
+.btn-love.loved:hover {
+  background: linear-gradient(135deg, #dc2626, #b91c1c);
+}
+
+.btn-love:not(.loved):hover {
+  border-color: #ef4444;
+  color: #ef4444;
+}
+
+/* Inactive state */
+.card-inactive .contender-nickname {
+  background: none;
+  -webkit-text-fill-color: var(--color-text-muted);
+  color: var(--color-text-muted);
+}
+
+.card-inactive .contender-actions .btn:not(.btn-love) {
+  display: none;
+}
+

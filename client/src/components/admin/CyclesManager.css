@@ -1,0 +1,140 @@
+.cycles-manager {
+  /* No specific styles needed, uses admin common styles */
+}
+
+.closed-at {
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+  margin-top: var(--spacing-xs);
+}
+
+.form-error {
+  color: var(--color-error);
+  font-size: 0.875rem;
+}
+
+.link-btn {
+  background: none;
+  border: none;
+  color: var(--color-accent-primary);
+  font-family: var(--font-family);
+  font-size: inherit;
+  cursor: pointer;
+  padding: 0;
+}
+
+.link-btn:hover {
+  text-decoration: underline;
+}
+
+.btn.danger {
+  color: var(--color-error);
+}
+
+.btn.danger:hover {
+  background: rgba(239, 68, 68, 0.1);
+  border-color: var(--color-error);
+}
+
+/* Results Modal */
+.results-modal {
+  width: 90vw;
+  max-width: 600px;
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+.results-summary {
+  display: flex;
+  gap: var(--spacing-xl);
+  margin-bottom: var(--spacing-lg);
+  padding-bottom: var(--spacing-lg);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.results-summary p {
+  color: var(--color-text-secondary);
+}
+
+.results-summary strong {
+  color: var(--color-accent-primary);
+}
+
+.results-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+}
+
+.result-item {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--spacing-md);
+  padding: var(--spacing-md);
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+}
+
+.result-item.inactive {
+  opacity: 0.6;
+}
+
+.result-rank {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--color-accent-primary);
+  min-width: 40px;
+}
+
+.result-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.result-name {
+  font-weight: 500;
+}
+
+.result-inactive-badge {
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+}
+
+.result-votes {
+  text-align: left;
+}
+
+.votes-count {
+  background: none;
+  border: none;
+  color: var(--color-accent-primary);
+  font-family: var(--font-family);
+  font-weight: 500;
+  cursor: pointer;
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: var(--radius-sm);
+  transition: background var(--transition-fast);
+}
+
+.votes-count:hover {
+  background: rgba(255, 51, 102, 0.1);
+}
+
+.voters-list {
+  margin-top: var(--spacing-sm);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+  padding: var(--spacing-sm);
+  background: var(--color-bg-secondary);
+  border-radius: var(--radius-sm);
+}
+
+.voter-name {
+  font-size: 0.875rem;
+  color: var(--color-text-secondary);
+}
+
