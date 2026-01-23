@@ -48,10 +48,6 @@ COPY --from=builder /app/client/dist ./client/dist
 # Copy built server
 COPY --from=builder /app/server/dist ./server/dist
 
-# Copy startup script
-COPY start.sh ./start.sh
-RUN chmod +x ./start.sh
-
 # Set environment
 ENV NODE_ENV=production
 ENV PORT=3001
@@ -59,8 +55,8 @@ ENV PORT=3001
 EXPOSE 3001
 
 # Health check
-HEALTHCHECK --interval=30s --timeout=10s --start-period=10s --retries=3 \
+HEALTHCHECK --interval=30s --timeout=10s --start-period=15s --retries=3 \
   CMD wget --no-verbose --tries=1 --spider http://localhost:3001/health || exit 1
 
-# Start with migration
-CMD ["./start.sh"]
+# Run migration and start server
+CMD cd /app/server && npx prisma db push --skip-generate && cd /app && npm run start
