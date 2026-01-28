@@ -19,12 +19,6 @@ const emptyForm: ContenderFormData = {
   status: 'active',
 }
 
-const STATUS_LABELS: Record<ContenderStatus, string> = {
-  active: 'פעיל',
-  inactive: 'לא פעיל (הודח)',
-  hidden: 'מוסתר',
-}
-
 export default function ContendersManager() {
   const cloudName = useStore(state => state.cloudName)
   const [contenders, setContenders] = useState<AdminContender[]>([])

@@ -1,5 +1,5 @@
 import axios, { AxiosInstance } from 'axios'
-import type { Contender, AppConfig, VoteStatus } from '../types'
+import type { Contender, AppConfig, VoteStatus, ContenderStatus } from '../types'
 import { getFingerprint } from '../utils/fingerprint'
 
 class ApiClient {
@@ -114,7 +114,7 @@ class ApiClient {
     nickname: string
     imagePublicId: string
     videos?: Array<{ title: string; publicId: string }>
-    isActive?: boolean
+    status?: ContenderStatus
   }) {
     const response = await this.client.post('/admin/contenders', data)
     return response.data
@@ -124,7 +124,7 @@ class ApiClient {
     nickname?: string
     imagePublicId?: string
     videos?: Array<{ title: string; publicId: string }>
-    isActive?: boolean
+    status?: ContenderStatus
   }) {
     const response = await this.client.put(`/admin/contenders/${id}`, data)
     return response.data

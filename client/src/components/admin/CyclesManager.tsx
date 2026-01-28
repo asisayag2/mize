@@ -301,14 +301,11 @@ export default function CyclesManager() {
                   {resultsModal.results.map((result, index) => (
                     <div 
                       key={result.contender.id} 
-                      className={`result-item ${!result.contender.isActive ? 'inactive' : ''}`}
+                      className="result-item"
                     >
                       <div className="result-rank">#{index + 1}</div>
                       <div className="result-info">
                         <span className="result-name">{result.contender.nickname}</span>
-                        {!result.contender.isActive && (
-                          <span className="result-inactive-badge">לא פעיל</span>
-                        )}
                       </div>
                       <div className="result-votes">
                         <button
