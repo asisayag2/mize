@@ -2,23 +2,27 @@ import { useState, useEffect, FormEvent } from 'react'
 import { api } from '../../api/client'
 import { useStore } from '../../store/useStore'
 import { getImageUrl, getVideoUrl } from '../../utils/cloudinary'
-import type { AdminContender, ContenderStats } from '../../types'
+import type { AdminContender, ContenderStats, ContenderStatus } from '../../types'
 import './ContendersManager.css'
 
 interface ContenderFormData {
   nickname: string
   imagePublicId: string
   videos: Array<{ title: string; publicId: string }>
-  isActive: boolean
-  isVisible: boolean
+  status: ContenderStatus
 }
 
 const emptyForm: ContenderFormData = {
   nickname: '',
   imagePublicId: '',
   videos: [],
-  isActive: true,
-  isVisible: true,
+  status: 'active',
+}
+
+const STATUS_LABELS: Record<ContenderStatus, string> = {
+  active: 'פעיל',
+  inactive: 'לא פעיל (הודח)',
+  hidden: 'מוסתר',
 }
 
 export default function ContendersManager() {
@@ -71,8 +75,7 @@ export default function ContendersManager() {
       nickname: contender.nickname,
       imagePublicId: contender.imagePublicId,
       videos: (contender.videos as Array<{ title: string; publicId: string }>) || [],
-      isActive: contender.isActive,
-      isVisible: contender.isVisible,
+      status: contender.status,
     })
     setEditingId(contender.id)
     setShowForm(true)
@@ -139,21 +142,12 @@ export default function ContendersManager() {
     }
   }
 
-  const handleToggleActive = async (contender: AdminContender) => {
+  const handleStatusChange = async (contender: AdminContender, newStatus: ContenderStatus) => {
     try {
-      await api.updateContender(contender.id, { isActive: !contender.isActive })
+      await api.updateContender(contender.id, { status: newStatus })
       await loadContenders()
     } catch (error) {
-      console.error('Failed to toggle contender status:', error)
-    }
-  }
-
-  const handleToggleVisibility = async (contender: AdminContender) => {
-    try {
-      await api.updateContender(contender.id, { isVisible: !contender.isVisible })
-      await loadContenders()
-    } catch (error) {
-      console.error('Failed to toggle contender visibility:', error)
+      console.error('Failed to update contender status:', error)
     }
   }
 
@@ -359,23 +353,17 @@ export default function ContendersManager() {
               ))}
             </div>
 
-            <div className="checkbox-group">
-              <label className="checkbox-label">
-                <input
-                  type="checkbox"
-                  checked={formData.isActive}
-                  onChange={(e) => setFormData(prev => ({ ...prev, isActive: e.target.checked }))}
-                />
-                מתמודד פעיל (ניתן להצביע עבורו)
-              </label>
-              <label className="checkbox-label">
-                <input
-                  type="checkbox"
-                  checked={formData.isVisible}
-                  onChange={(e) => setFormData(prev => ({ ...prev, isVisible: e.target.checked }))}
-                />
-                מתמודד גלוי (מוצג בקרוסלה)
-              </label>
+            <div>
+              <label>סטטוס</label>
+              <select
+                className="input"
+                value={formData.status}
+                onChange={(e) => setFormData(prev => ({ ...prev, status: e.target.value as ContenderStatus }))}
+              >
+                <option value="active">פעיל - גלוי וניתן להצבעה</option>
+                <option value="inactive">לא פעיל (הודח) - גלוי אך לא ניתן להצבעה</option>
+                <option value="hidden">מוסתר - לא מוצג כלל</option>
+              </select>
             </div>
 
             {formError && <p className="form-error">{formError}</p>}
@@ -402,7 +390,6 @@ export default function ContendersManager() {
               <tr>
                 <th>כינוי</th>
                 <th>סטטוס</th>
-                <th>נראות</th>
                 <th>לבבות</th>
                 <th>ניחושים</th>
                 <th>פעולות</th>
@@ -410,17 +397,18 @@ export default function ContendersManager() {
             </thead>
             <tbody>
               {contenders.map(contender => (
-                <tr key={contender.id} className={!contender.isVisible ? 'row-hidden' : ''}>
+                <tr key={contender.id} className={contender.status === 'hidden' ? 'row-hidden' : ''}>
                   <td>{contender.nickname}</td>
                   <td>
-                    <span className={`status-badge ${contender.isActive ? 'active' : 'inactive'}`}>
-                      {contender.isActive ? 'פעיל' : 'לא פעיל'}
-                    </span>
-                  </td>
-                  <td>
-                    <span className={`status-badge ${contender.isVisible ? 'visible' : 'hidden'}`}>
-                      {contender.isVisible ? 'גלוי' : 'מוסתר'}
-                    </span>
+                    <select
+                      className="status-select"
+                      value={contender.status}
+                      onChange={(e) => handleStatusChange(contender, e.target.value as ContenderStatus)}
+                    >
+                      <option value="active">פעיל</option>
+                      <option value="inactive">לא פעיל</option>
+                      <option value="hidden">מוסתר</option>
+                    </select>
                   </td>
                   <td>{contender.loveCount}</td>
                   <td>
@@ -435,18 +423,6 @@ export default function ContendersManager() {
                     <div className="admin-actions">
                       <button className="btn btn-secondary" onClick={() => handleEdit(contender)}>
                         ערוך
-                      </button>
-                      <button
-                        className="btn btn-secondary"
-                        onClick={() => handleToggleActive(contender)}
-                      >
-                        {contender.isActive ? 'השבת' : 'הפעל'}
-                      </button>
-                      <button
-                        className="btn btn-secondary"
-                        onClick={() => handleToggleVisibility(contender)}
-                      >
-                        {contender.isVisible ? 'הסתר' : 'הצג'}
                       </button>
                       <button
                         className="btn btn-secondary danger"

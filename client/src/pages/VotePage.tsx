@@ -19,7 +19,7 @@ export default function VotePage() {
   const [success, setSuccess] = useState(false)
   const [error, setError] = useState('')
 
-  const activeContenders = contenders.filter(c => c.isActive)
+  const activeContenders = contenders.filter(c => c.status === 'active')
   const maxVotes = activeCycle?.maxVotesPerUser || 3
 
   useEffect(() => {

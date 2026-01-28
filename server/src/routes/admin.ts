@@ -115,7 +115,7 @@ export function adminRoutes(prisma: PrismaClient): Router {
    */
   router.post('/contenders', async (req: Request, res: Response) => {
     try {
-      const { nickname, imagePublicId, videos, isActive, isVisible } = req.body;
+      const { nickname, imagePublicId, videos, status } = req.body;
 
       if (!nickname || typeof nickname !== 'string') {
         res.status(400).json({ error: 'נא להזין כינוי' });
@@ -127,13 +127,19 @@ export function adminRoutes(prisma: PrismaClient): Router {
         return;
       }
 
+      // Validate status if provided
+      const validStatuses = ['active', 'inactive', 'hidden'];
+      if (status && !validStatuses.includes(status)) {
+        res.status(400).json({ error: 'סטטוס לא תקין' });
+        return;
+      }
+
       const contender = await prisma.contender.create({
         data: {
           nickname: nickname.trim(),
           imagePublicId: imagePublicId.trim(),
           videos: videos || [],
-          isActive: isActive !== false,
-          isVisible: isVisible !== false,
+          status: status || 'active',
         },
       });
 
@@ -151,11 +157,18 @@ export function adminRoutes(prisma: PrismaClient): Router {
   router.put('/contenders/:id', async (req: Request, res: Response) => {
     try {
       const { id } = req.params;
-      const { nickname, imagePublicId, videos, isActive, isVisible } = req.body;
+      const { nickname, imagePublicId, videos, status } = req.body;
 
       const existing = await prisma.contender.findUnique({ where: { id } });
       if (!existing) {
         res.status(404).json({ error: 'מתמודד לא נמצא' });
+        return;
+      }
+
+      // Validate status if provided
+      const validStatuses = ['active', 'inactive', 'hidden'];
+      if (status !== undefined && !validStatuses.includes(status)) {
+        res.status(400).json({ error: 'סטטוס לא תקין' });
         return;
       }
 
@@ -165,8 +178,7 @@ export function adminRoutes(prisma: PrismaClient): Router {
           ...(nickname && { nickname: nickname.trim() }),
           ...(imagePublicId && { imagePublicId: imagePublicId.trim() }),
           ...(videos !== undefined && { videos }),
-          ...(isActive !== undefined && { isActive }),
-          ...(isVisible !== undefined && { isVisible }),
+          ...(status !== undefined && { status }),
         },
       });
 

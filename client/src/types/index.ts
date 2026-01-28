@@ -3,10 +3,12 @@ export interface Video {
   publicId: string
 }
 
+export type ContenderStatus = 'active' | 'inactive' | 'hidden'
+
 export interface Contender {
   id: string
   nickname: string
-  isActive: boolean
+  status: ContenderStatus
   imagePublicId: string
   videos: Video[]
   loveCount: number
@@ -42,7 +44,6 @@ export interface AppConfig {
 
 // Admin types
 export interface AdminContender extends Contender {
-  isVisible: boolean
   guessCount: number
   updatedAt: string
 }
@@ -83,7 +84,6 @@ export interface CycleResults {
       id: string
       nickname: string
       imagePublicId: string
-      isActive: boolean
     }
     count: number
     voters: string[]

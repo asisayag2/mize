@@ -36,7 +36,7 @@ export default function ContenderCard({
   })
 
   return (
-    <div className={`contender-card card ${!contender.isActive ? 'card-inactive' : ''}`}>
+    <div className={`contender-card card ${contender.status === 'inactive' ? 'card-inactive' : ''}`}>
       {/* Image */}
       <div className="contender-image-container">
         {imageUrl ? (
@@ -51,7 +51,7 @@ export default function ContenderCard({
             <span>🎭</span>
           </div>
         )}
-        {!contender.isActive && (
+        {contender.status === 'inactive' && (
           <div className="contender-inactive-badge">הודח</div>
         )}
         {/* Love counter on image */}
@@ -93,7 +93,7 @@ export default function ContenderCard({
           </button>
 
           {/* Guess button - only for active contenders */}
-          {contender.isActive && (
+          {contender.status === 'active' && (
             <button className="btn btn-secondary" onClick={onOpenGuess}>
               🤔 נחש מי זה?
             </button>

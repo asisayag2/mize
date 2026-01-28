@@ -7,15 +7,20 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum ContenderStatus {
+  active
+  inactive
+  hidden
+}
+
 model Contender {
-  id            String   @id @default(uuid())
+  id            String           @id @default(uuid())
   nickname      String
-  isActive      Boolean  @default(true)
-  isVisible     Boolean  @default(true)
+  status        ContenderStatus  @default(active)
   imagePublicId String
-  videos        Json     @default("[]") // Array of {title: string, publicId: string}
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  videos        Json             @default("[]") // Array of {title: string, publicId: string}
+  createdAt     DateTime         @default(now())
+  updatedAt     DateTime         @updatedAt
 
   loves          Love[]
   guesses        Guess[]

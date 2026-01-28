@@ -56,7 +56,7 @@ export function publicRoutes(prisma: PrismaClient): Router {
       const deviceToken = req.deviceToken;
 
       const contenders = await prisma.contender.findMany({
-        where: { isVisible: true },
+        where: { status: { not: 'hidden' } },
         orderBy: { createdAt: 'asc' },
         include: {
           _count: {
@@ -73,7 +73,7 @@ export function publicRoutes(prisma: PrismaClient): Router {
       const result = contenders.map((c) => ({
         id: c.id,
         nickname: c.nickname,
-        isActive: c.isActive,
+        status: c.status,
         imagePublicId: c.imagePublicId,
         videos: c.videos,
         loveCount: c._count.loves,
@@ -105,12 +105,12 @@ export function publicRoutes(prisma: PrismaClient): Router {
 
       const fingerprintHash = hashFingerprint(fingerprint as FingerprintSignals);
 
-      // Check if contender exists and is visible
+      // Check if contender exists and is not hidden
       const contender = await prisma.contender.findUnique({
         where: { id },
       });
 
-      if (!contender || !contender.isVisible) {
+      if (!contender || contender.status === 'hidden') {
         res.status(404).json({ error: 'מתמודד לא נמצא' });
         return;
       }
@@ -187,12 +187,12 @@ export function publicRoutes(prisma: PrismaClient): Router {
 
       const fingerprintHash = hashFingerprint(fingerprint as FingerprintSignals);
 
-      // Check if contender exists and is visible
+      // Check if contender exists and is not hidden
       const contender = await prisma.contender.findUnique({
         where: { id },
       });
 
-      if (!contender || !contender.isVisible) {
+      if (!contender || contender.status === 'hidden') {
         res.status(404).json({ error: 'מתמודד לא נמצא' });
         return;
       }
@@ -358,12 +358,11 @@ export function publicRoutes(prisma: PrismaClient): Router {
         return;
       }
 
-      // Validate all selections are active and visible contenders
+      // Validate all selections are active contenders (status = 'active')
       const validContenders = await prisma.contender.findMany({
         where: {
           id: { in: selections },
-          isActive: true,
-          isVisible: true,
+          status: 'active',
         },
         select: { id: true },
       });

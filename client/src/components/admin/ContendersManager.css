@@ -87,48 +87,28 @@
   text-decoration: underline;
 }
 
-.checkbox-group {
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-sm);
-}
-
-.checkbox-label {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-sm);
+/* Status select dropdown in table */
+.status-select {
+  background: var(--color-bg-tertiary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--border-radius);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  font-family: var(--font-family);
+  font-size: 0.875rem;
+  color: var(--color-text-primary);
   cursor: pointer;
+  min-width: 100px;
 }
 
-.checkbox-label input[type="checkbox"] {
-  width: 18px;
-  height: 18px;
-  accent-color: var(--color-accent-primary);
-}
-
-/* Visibility badge */
-.status-badge.visible {
-  background: rgba(16, 185, 129, 0.2);
-  color: var(--color-success);
-}
-
-.status-badge.hidden {
-  background: rgba(245, 158, 11, 0.2);
-  color: var(--color-warning);
+.status-select:focus {
+  outline: none;
+  border-color: var(--color-accent-primary);
 }
 
 /* Hidden row styling */
 .row-hidden {
-  opacity: 0.6;
-}
-
-.row-hidden td:first-child {
-  position: relative;
-}
-
-.row-hidden td:first-child::before {
-  content: '👁‍🗨';
-  margin-left: var(--spacing-xs);
+  opacity: 0.5;
+  background: var(--color-bg-tertiary);
 }
 
 .form-error {
