@@ -10,6 +10,7 @@ interface ContenderFormData {
   imagePublicId: string
   videos: Array<{ title: string; publicId: string }>
   isActive: boolean
+  isVisible: boolean
 }
 
 const emptyForm: ContenderFormData = {
@@ -17,6 +18,7 @@ const emptyForm: ContenderFormData = {
   imagePublicId: '',
   videos: [],
   isActive: true,
+  isVisible: true,
 }
 
 export default function ContendersManager() {
@@ -70,6 +72,7 @@ export default function ContendersManager() {
       imagePublicId: contender.imagePublicId,
       videos: (contender.videos as Array<{ title: string; publicId: string }>) || [],
       isActive: contender.isActive,
+      isVisible: contender.isVisible,
     })
     setEditingId(contender.id)
     setShowForm(true)
@@ -142,6 +145,15 @@ export default function ContendersManager() {
       await loadContenders()
     } catch (error) {
       console.error('Failed to toggle contender status:', error)
+    }
+  }
+
+  const handleToggleVisibility = async (contender: AdminContender) => {
+    try {
+      await api.updateContender(contender.id, { isVisible: !contender.isVisible })
+      await loadContenders()
+    } catch (error) {
+      console.error('Failed to toggle contender visibility:', error)
     }
   }
 
@@ -347,14 +359,22 @@ export default function ContendersManager() {
               ))}
             </div>
 
-            <div>
+            <div className="checkbox-group">
               <label className="checkbox-label">
                 <input
                   type="checkbox"
                   checked={formData.isActive}
                   onChange={(e) => setFormData(prev => ({ ...prev, isActive: e.target.checked }))}
                 />
-                מתמודד פעיל
+                מתמודד פעיל (ניתן להצביע עבורו)
+              </label>
+              <label className="checkbox-label">
+                <input
+                  type="checkbox"
+                  checked={formData.isVisible}
+                  onChange={(e) => setFormData(prev => ({ ...prev, isVisible: e.target.checked }))}
+                />
+                מתמודד גלוי (מוצג בקרוסלה)
               </label>
             </div>
 
@@ -382,6 +402,7 @@ export default function ContendersManager() {
               <tr>
                 <th>כינוי</th>
                 <th>סטטוס</th>
+                <th>נראות</th>
                 <th>לבבות</th>
                 <th>ניחושים</th>
                 <th>פעולות</th>
@@ -389,11 +410,16 @@ export default function ContendersManager() {
             </thead>
             <tbody>
               {contenders.map(contender => (
-                <tr key={contender.id}>
+                <tr key={contender.id} className={!contender.isVisible ? 'row-hidden' : ''}>
                   <td>{contender.nickname}</td>
                   <td>
                     <span className={`status-badge ${contender.isActive ? 'active' : 'inactive'}`}>
                       {contender.isActive ? 'פעיל' : 'לא פעיל'}
+                    </span>
+                  </td>
+                  <td>
+                    <span className={`status-badge ${contender.isVisible ? 'visible' : 'hidden'}`}>
+                      {contender.isVisible ? 'גלוי' : 'מוסתר'}
                     </span>
                   </td>
                   <td>{contender.loveCount}</td>
@@ -415,6 +441,12 @@ export default function ContendersManager() {
                         onClick={() => handleToggleActive(contender)}
                       >
                         {contender.isActive ? 'השבת' : 'הפעל'}
+                      </button>
+                      <button
+                        className="btn btn-secondary"
+                        onClick={() => handleToggleVisibility(contender)}
+                      >
+                        {contender.isVisible ? 'הסתר' : 'הצג'}
                       </button>
                       <button
                         className="btn btn-secondary danger"

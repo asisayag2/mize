@@ -56,6 +56,7 @@ export function publicRoutes(prisma: PrismaClient): Router {
       const deviceToken = req.deviceToken;
 
       const contenders = await prisma.contender.findMany({
+        where: { isVisible: true },
         orderBy: { createdAt: 'asc' },
         include: {
           _count: {
@@ -104,12 +105,12 @@ export function publicRoutes(prisma: PrismaClient): Router {
 
       const fingerprintHash = hashFingerprint(fingerprint as FingerprintSignals);
 
-      // Check if contender exists
+      // Check if contender exists and is visible
       const contender = await prisma.contender.findUnique({
         where: { id },
       });
 
-      if (!contender) {
+      if (!contender || !contender.isVisible) {
         res.status(404).json({ error: 'מתמודד לא נמצא' });
         return;
       }
@@ -186,12 +187,12 @@ export function publicRoutes(prisma: PrismaClient): Router {
 
       const fingerprintHash = hashFingerprint(fingerprint as FingerprintSignals);
 
-      // Check if contender exists
+      // Check if contender exists and is visible
       const contender = await prisma.contender.findUnique({
         where: { id },
       });
 
-      if (!contender) {
+      if (!contender || !contender.isVisible) {
         res.status(404).json({ error: 'מתמודד לא נמצא' });
         return;
       }
@@ -357,17 +358,18 @@ export function publicRoutes(prisma: PrismaClient): Router {
         return;
       }
 
-      // Validate all selections are active contenders
+      // Validate all selections are active and visible contenders
       const validContenders = await prisma.contender.findMany({
         where: {
           id: { in: selections },
           isActive: true,
+          isVisible: true,
         },
         select: { id: true },
       });
 
       if (validContenders.length !== selections.length) {
-        res.status(400).json({ error: 'חלק מהמתמודדים שנבחרו אינם פעילים' });
+        res.status(400).json({ error: 'חלק מהמתמודדים שנבחרו אינם זמינים להצבעה' });
         return;
       }
 

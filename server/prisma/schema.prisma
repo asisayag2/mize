@@ -11,6 +11,7 @@ model Contender {
   id            String   @id @default(uuid())
   nickname      String
   isActive      Boolean  @default(true)
+  isVisible     Boolean  @default(true)
   imagePublicId String
   videos        Json     @default("[]") // Array of {title: string, publicId: string}
   createdAt     DateTime @default(now())

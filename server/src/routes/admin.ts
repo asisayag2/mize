@@ -115,7 +115,7 @@ export function adminRoutes(prisma: PrismaClient): Router {
    */
   router.post('/contenders', async (req: Request, res: Response) => {
     try {
-      const { nickname, imagePublicId, videos, isActive } = req.body;
+      const { nickname, imagePublicId, videos, isActive, isVisible } = req.body;
 
       if (!nickname || typeof nickname !== 'string') {
         res.status(400).json({ error: 'נא להזין כינוי' });
@@ -133,6 +133,7 @@ export function adminRoutes(prisma: PrismaClient): Router {
           imagePublicId: imagePublicId.trim(),
           videos: videos || [],
           isActive: isActive !== false,
+          isVisible: isVisible !== false,
         },
       });
 
@@ -150,7 +151,7 @@ export function adminRoutes(prisma: PrismaClient): Router {
   router.put('/contenders/:id', async (req: Request, res: Response) => {
     try {
       const { id } = req.params;
-      const { nickname, imagePublicId, videos, isActive } = req.body;
+      const { nickname, imagePublicId, videos, isActive, isVisible } = req.body;
 
       const existing = await prisma.contender.findUnique({ where: { id } });
       if (!existing) {
@@ -165,6 +166,7 @@ export function adminRoutes(prisma: PrismaClient): Router {
           ...(imagePublicId && { imagePublicId: imagePublicId.trim() }),
           ...(videos !== undefined && { videos }),
           ...(isActive !== undefined && { isActive }),
+          ...(isVisible !== undefined && { isVisible }),
         },
       });
 

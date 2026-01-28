@@ -42,6 +42,7 @@ export interface AppConfig {
 
 // Admin types
 export interface AdminContender extends Contender {
+  isVisible: boolean
   guessCount: number
   updatedAt: string
 }

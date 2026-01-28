@@ -87,6 +87,12 @@
   text-decoration: underline;
 }
 
+.checkbox-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+}
+
 .checkbox-label {
   display: flex;
   align-items: center;
@@ -98,6 +104,31 @@
   width: 18px;
   height: 18px;
   accent-color: var(--color-accent-primary);
+}
+
+/* Visibility badge */
+.status-badge.visible {
+  background: rgba(16, 185, 129, 0.2);
+  color: var(--color-success);
+}
+
+.status-badge.hidden {
+  background: rgba(245, 158, 11, 0.2);
+  color: var(--color-warning);
+}
+
+/* Hidden row styling */
+.row-hidden {
+  opacity: 0.6;
+}
+
+.row-hidden td:first-child {
+  position: relative;
+}
+
+.row-hidden td:first-child::before {
+  content: '👁‍🗨';
+  margin-left: var(--spacing-xs);
 }
 
 .form-error {
