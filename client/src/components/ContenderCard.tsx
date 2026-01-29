@@ -75,7 +75,8 @@ export default function ContenderCard({
                 className="video-link"
                 onClick={() => onOpenVideo(video)}
               >
-                ▶ {video.title}
+                <span className="video-play-icon">▶️</span>
+                <span className="video-title">{video.title}</span>
               </button>
             ))}
           </div>

@@ -102,26 +102,44 @@
 .contender-videos {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-xs);
+  gap: var(--spacing-sm);
 }
 
 .video-link {
-  background: var(--color-bg-secondary);
-  border: 1px solid var(--color-border);
-  color: var(--color-text-secondary);
-  padding: var(--spacing-sm) var(--spacing-md);
-  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-sm);
+  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  border: none;
+  color: white;
+  padding: var(--spacing-md) var(--spacing-lg);
+  border-radius: var(--radius-lg);
   font-family: var(--font-family);
-  font-size: 0.875rem;
-  text-align: right;
+  font-size: 1rem;
+  font-weight: 600;
+  text-align: center;
   cursor: pointer;
   transition: all var(--transition-fast);
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
 }
 
 .video-link:hover {
-  background: var(--color-bg-card-hover);
-  color: var(--color-accent-primary);
-  border-color: var(--color-accent-primary);
+  background: linear-gradient(135deg, #4f46e5, #7c3aed);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(99, 102, 241, 0.4);
+}
+
+.video-link:active {
+  transform: translateY(0);
+}
+
+.video-play-icon {
+  font-size: 1.25rem;
+}
+
+.video-title {
+  flex: 1;
 }
 
 /* Actions */
