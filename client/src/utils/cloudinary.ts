@@ -30,10 +30,25 @@ export function getImageUrl(
 }
 
 /**
- * Get Cloudinary video URL
+ * Get Cloudinary video URL with automatic optimization
  */
-export function getVideoUrl(cloudName: string, publicId: string): string {
+export function getVideoUrl(
+  cloudName: string, 
+  publicId: string,
+  options?: {
+    quality?: 'auto' | 'auto:low' | 'auto:eco' | 'auto:good' | 'auto:best' | number
+    format?: 'auto' | 'mp4' | 'webm'
+  }
+): string {
   if (!cloudName || !publicId) return ''
-  return `https://res.cloudinary.com/${cloudName}/video/upload/${publicId}`
+  
+  const transformations: string[] = [
+    'f_auto:video', // Automatic best video format (webm, mp4, etc.)
+    `q_${options?.quality || 'auto'}`, // Automatic quality optimization
+  ]
+  
+  const transformStr = transformations.join(',') + '/'
+  
+  return `https://res.cloudinary.com/${cloudName}/video/upload/${transformStr}${publicId}`
 }
 
