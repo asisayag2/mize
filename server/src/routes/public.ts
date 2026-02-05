@@ -48,6 +48,65 @@ export function publicRoutes(prisma: PrismaClient): Router {
   });
 
   /**
+   * GET /api/contenders/:id
+   * Returns single contender with guess word frequencies for word cloud
+   */
+  router.get('/contenders/:id', async (req: Request, res: Response) => {
+    try {
+      const { id } = req.params;
+      const deviceToken = req.deviceToken;
+
+      const contender = await prisma.contender.findUnique({
+        where: { id },
+        include: {
+          guesses: {
+            select: { guessText: true },
+          },
+          _count: {
+            select: { loves: true },
+          },
+          loves: {
+            where: { deviceToken },
+            select: { id: true },
+          },
+        },
+      });
+
+      if (!contender || contender.status === 'hidden') {
+        res.status(404).json({ error: 'מתמודד לא נמצא' });
+        return;
+      }
+
+      // Aggregate guesses into word frequencies
+      const guessFrequencies = new Map<string, number>();
+      for (const guess of contender.guesses) {
+        const text = guess.guessText.trim();
+        if (text) {
+          guessFrequencies.set(text, (guessFrequencies.get(text) || 0) + 1);
+        }
+      }
+
+      const guessWords = Array.from(guessFrequencies.entries())
+        .map(([text, value]) => ({ text, value }))
+        .sort((a, b) => b.value - a.value);
+
+      res.json({
+        id: contender.id,
+        nickname: contender.nickname,
+        status: contender.status,
+        imagePublicId: contender.imagePublicId,
+        videos: contender.videos,
+        loveCount: contender._count.loves,
+        isLovedByUser: contender.loves.length > 0,
+        guessWords,
+      });
+    } catch (error) {
+      console.error('Error fetching contender detail:', error);
+      res.status(500).json({ error: 'שגיאת שרת' });
+    }
+  });
+
+  /**
    * GET /api/contenders
    * Returns all contenders with love counts
    */

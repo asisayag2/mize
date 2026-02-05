@@ -1,0 +1,324 @@
+.contender-page {
+  min-height: 100vh;
+  background: var(--color-bg-primary);
+  display: flex;
+  flex-direction: column;
+}
+
+/* Back button */
+.back-button {
+  position: fixed;
+  top: var(--spacing-md);
+  right: var(--spacing-md);
+  z-index: 100;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: white;
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-radius: var(--radius-full);
+  font-family: var(--font-family);
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: var(--transition-fast);
+}
+
+.back-button:hover {
+  background: rgba(0, 0, 0, 0.8);
+  transform: translateX(4px);
+}
+
+/* Loading & Error states */
+.loading-container,
+.error-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  gap: var(--spacing-lg);
+  text-align: center;
+  padding: var(--spacing-lg);
+}
+
+.error-container p {
+  color: var(--color-text-muted);
+  font-size: 1.1rem;
+}
+
+/* Name header */
+.name-header {
+  text-align: center;
+  padding: var(--spacing-lg) var(--spacing-md) var(--spacing-md);
+}
+
+.contender-name {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin: 0;
+  background: var(--color-accent-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.inactive-tag {
+  display: inline-block;
+  background: rgba(100, 100, 100, 0.5);
+  color: var(--color-text-secondary);
+  padding: var(--spacing-xs) var(--spacing-md);
+  border-radius: var(--radius-sm);
+  font-size: 0.85rem;
+  font-weight: 500;
+  margin-top: var(--spacing-sm);
+}
+
+/* Main layout */
+.main-layout {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0 var(--spacing-lg);
+}
+
+/* Image container with overlays */
+.image-container {
+  position: relative;
+  display: inline-block;
+}
+
+.contender-image {
+  max-width: 100%;
+  max-height: 55vh;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  border-radius: var(--radius-lg);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+}
+
+.image-placeholder {
+  width: 300px;
+  aspect-ratio: 4 / 5;
+  max-height: 55vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-bg-secondary);
+  border-radius: var(--radius-lg);
+  font-size: 6rem;
+}
+
+/* Love button - overlay on bottom left of image */
+.love-button {
+  position: absolute;
+  bottom: var(--spacing-md);
+  left: var(--spacing-md);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(8px);
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  color: white;
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-radius: var(--radius-full);
+  font-family: var(--font-family);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  z-index: 10;
+}
+
+.love-button:hover {
+  transform: scale(1.05);
+  background: rgba(0, 0, 0, 0.85);
+}
+
+.love-button.loved {
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.9), rgba(220, 38, 38, 0.9));
+  border-color: #ef4444;
+}
+
+.love-button.loved:hover {
+  background: linear-gradient(135deg, rgba(220, 38, 38, 1), rgba(185, 28, 28, 1));
+}
+
+.love-icon {
+  font-size: 1.3rem;
+}
+
+.love-count {
+  font-size: 1rem;
+  font-weight: 600;
+  min-width: 20px;
+  text-align: center;
+}
+
+/* Videos overlay - bottom of image, left to right (desktop) */
+.videos-overlay {
+  position: absolute;
+  bottom: var(--spacing-md);
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: var(--spacing-sm);
+  z-index: 10;
+}
+
+.video-rect {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: white;
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-radius: var(--radius-md);
+  font-family: var(--font-family);
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  white-space: nowrap;
+}
+
+.video-rect:hover {
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.8), rgba(139, 92, 246, 0.8));
+  border-color: rgba(139, 92, 246, 0.6);
+  transform: translateY(-2px);
+}
+
+.video-rect-icon {
+  font-size: 1rem;
+}
+
+.video-rect-title {
+  max-width: 120px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Videos mobile - hidden on desktop */
+.videos-mobile {
+  display: none;
+}
+
+/* Word Cloud section */
+.wordcloud-section {
+  background: var(--color-bg-card);
+  border-top: 1px solid var(--color-border);
+  padding: var(--spacing-md);
+  margin-top: var(--spacing-lg);
+  text-align: center;
+}
+
+.wordcloud-title {
+  text-align: center;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  margin: 0;
+}
+
+.wordcloud-section .wordcloud {
+  padding: var(--spacing-xs) var(--spacing-sm);
+  min-height: 100px;
+}
+
+.guess-btn {
+  display: inline-block;
+  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  border: none;
+  color: white;
+  padding: var(--spacing-sm) var(--spacing-lg);
+  border-radius: var(--radius-full);
+  font-family: var(--font-family);
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  box-shadow: 0 4px 16px rgba(99, 102, 241, 0.4);
+  margin-top: var(--spacing-sm);
+}
+
+.guess-btn:hover {
+  background: linear-gradient(135deg, #4f46e5, #7c3aed);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(99, 102, 241, 0.5);
+}
+
+/* ===== MOBILE LAYOUT ===== */
+@media (max-width: 768px) {
+  .name-header {
+    padding-top: var(--spacing-xl);
+  }
+
+  .contender-name {
+    font-size: 1.8rem;
+  }
+
+  .main-layout {
+    padding: 0 var(--spacing-md);
+    gap: var(--spacing-md);
+  }
+
+  .contender-image {
+    max-height: 45vh;
+  }
+
+  /* Hide videos overlay on mobile */
+  .videos-overlay {
+    display: none;
+  }
+
+  /* Show videos below image on mobile */
+  .videos-mobile {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--spacing-sm);
+    margin-top: var(--spacing-md);
+  }
+
+  .videos-mobile .video-rect {
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.2), rgba(139, 92, 246, 0.2));
+    border: 1px solid rgba(139, 92, 246, 0.3);
+  }
+
+  .wordcloud-section {
+    margin-top: var(--spacing-md);
+  }
+}
+
+@media (max-width: 480px) {
+  .contender-name {
+    font-size: 1.5rem;
+  }
+
+  .video-rect {
+    padding: var(--spacing-xs) var(--spacing-sm);
+    font-size: 0.8rem;
+  }
+
+  .video-rect-icon {
+    font-size: 0.9rem;
+  }
+
+  .contender-image {
+    max-height: 40vh;
+  }
+
+  .love-button {
+    padding: var(--spacing-xs) var(--spacing-sm);
+  }
+
+  .love-icon {
+    font-size: 1.1rem;
+  }
+
+  .love-count {
+    font-size: 0.9rem;
+  }
+}

@@ -90,3 +90,13 @@ export interface CycleResults {
   }>
 }
 
+// Contender detail page types
+export interface WordFrequency {
+  text: string
+  value: number
+}
+
+export interface ContenderDetail extends Contender {
+  guessWords: WordFrequency[]
+}
+

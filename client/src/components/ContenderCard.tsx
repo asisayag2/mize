@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { useStore } from '../store/useStore'
 import { getImageUrl } from '../utils/cloudinary'
 import type { Contender, Video } from '../types'
@@ -15,9 +16,14 @@ export default function ContenderCard({
   onOpenVideo,
   onOpenGuess,
 }: ContenderCardProps) {
+  const navigate = useNavigate()
   const cloudName = useStore(state => state.cloudName)
   const loveContender = useStore(state => state.loveContender)
   const [isLoving, setIsLoving] = useState(false)
+
+  const handleNavigateToDetail = () => {
+    navigate(`/contender/${contender.id}`)
+  }
 
   const handleLove = async () => {
     if (isLoving) return
@@ -37,8 +43,14 @@ export default function ContenderCard({
 
   return (
     <div className={`contender-card card ${contender.status === 'inactive' ? 'card-inactive' : ''}`}>
-      {/* Image */}
-      <div className="contender-image-container">
+      {/* Image - clickable to navigate to detail page */}
+      <div 
+        className="contender-image-container contender-clickable"
+        onClick={handleNavigateToDetail}
+        role="button"
+        tabIndex={0}
+        onKeyDown={(e) => e.key === 'Enter' && handleNavigateToDetail()}
+      >
         {imageUrl ? (
           <img
             src={imageUrl}
@@ -60,11 +72,21 @@ export default function ContenderCard({
             <span className="love-counter-text">{contender.loveCount} אנשים ❤️ אותי</span>
           </div>
         )}
+        {/* Click indicator */}
+        <div className="contender-click-indicator">לחץ לפרטים</div>
       </div>
 
       {/* Content */}
       <div className="contender-content">
-        <h3 className="contender-nickname">{contender.nickname}</h3>
+        <h3 
+          className="contender-nickname contender-clickable"
+          onClick={handleNavigateToDetail}
+          role="button"
+          tabIndex={0}
+          onKeyDown={(e) => e.key === 'Enter' && handleNavigateToDetail()}
+        >
+          {contender.nickname}
+        </h3>
 
         {/* Videos */}
         {contender.videos.length > 0 && (
