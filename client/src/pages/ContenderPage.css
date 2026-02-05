@@ -110,10 +110,10 @@
   font-size: 6rem;
 }
 
-/* Love button - overlay on bottom left of image */
+/* Love button - overlay on top left of image */
 .love-button {
   position: absolute;
-  bottom: var(--spacing-md);
+  top: var(--spacing-md);
   left: var(--spacing-md);
   display: flex;
   align-items: center;
@@ -158,26 +158,27 @@
 /* Videos overlay - bottom of image, left to right (desktop) */
 .videos-overlay {
   position: absolute;
-  bottom: var(--spacing-md);
+  bottom: var(--spacing-sm);
   left: 50%;
   transform: translateX(-50%);
   display: flex;
-  gap: var(--spacing-sm);
+  gap: var(--spacing-xs);
   z-index: 10;
+  max-width: 95%;
 }
 
 .video-rect {
   display: flex;
   align-items: center;
   gap: var(--spacing-xs);
-  background: rgba(0, 0, 0, 0.7);
+  background: rgba(0, 0, 0, 0.75);
   backdrop-filter: blur(8px);
   border: 1px solid rgba(255, 255, 255, 0.2);
   color: white;
-  padding: var(--spacing-sm) var(--spacing-md);
+  padding: var(--spacing-md) var(--spacing-sm);
   border-radius: var(--radius-md);
   font-family: var(--font-family);
-  font-size: 0.85rem;
+  font-size: 0.8rem;
   font-weight: 500;
   cursor: pointer;
   transition: all var(--transition-fast);
@@ -191,11 +192,11 @@
 }
 
 .video-rect-icon {
-  font-size: 1rem;
+  font-size: 0.9rem;
 }
 
 .video-rect-title {
-  max-width: 120px;
+  max-width: 100px;
   overflow: hidden;
   text-overflow: ellipsis;
 }
