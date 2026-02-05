@@ -36,10 +36,16 @@ export default function ContenderPage() {
     try {
       const data = await api.getContenderDetail(id)
       setContender({
-        ...data,
+        id: data.id,
+        nickname: data.nickname,
+        status: data.status,
+        imagePublicId: data.imagePublicId,
+        videos: data.videos,
+        loveCount: data.loveCount,
         hasLoved: data.isLovedByUser,
         createdAt: data.createdAt || new Date().toISOString(),
-      } as ContenderDetail)
+        guessWords: data.guessWords,
+      })
     } catch (err) {
       console.error('Error fetching contender:', err)
       setError('לא ניתן לטעון את המתמודד')
@@ -78,14 +84,13 @@ export default function ContenderPage() {
     if (!contender || isLoving) return
     
     setIsLoving(true)
-    const result = await loveContender(contender.id)
-    if (result && contender) {
-      setContender({
-        ...contender,
-        hasLoved: result.loved,
-        loveCount: result.loveCount,
-      })
-    }
+    const newLovedState = await loveContender(contender.id)
+    // Optimistically update local state
+    setContender({
+      ...contender,
+      hasLoved: newLovedState,
+      loveCount: contender.loveCount + (newLovedState ? 1 : -1),
+    })
     setIsLoving(false)
   }
 

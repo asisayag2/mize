@@ -1,5 +1,5 @@
 import axios, { AxiosInstance } from 'axios'
-import type { Contender, AppConfig, VoteStatus, ContenderStatus, ContenderDetail } from '../types'
+import type { Contender, AppConfig, VoteStatus, ContenderStatus, ContenderDetailResponse } from '../types'
 import { getFingerprint } from '../utils/fingerprint'
 
 class ApiClient {
@@ -51,7 +51,7 @@ class ApiClient {
     return response.data
   }
 
-  async getContenderDetail(id: string): Promise<ContenderDetail> {
+  async getContenderDetail(id: string): Promise<ContenderDetailResponse> {
     const response = await this.client.get(`/contenders/${id}`)
     return response.data
   }

@@ -96,6 +96,18 @@ export interface WordFrequency {
   value: number
 }
 
+export interface ContenderDetailResponse {
+  id: string
+  nickname: string
+  status: ContenderStatus
+  imagePublicId: string
+  videos: Video[]
+  loveCount: number
+  isLovedByUser: boolean
+  guessWords: WordFrequency[]
+  createdAt?: string
+}
+
 export interface ContenderDetail extends Contender {
   guessWords: WordFrequency[]
 }
