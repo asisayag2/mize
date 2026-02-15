@@ -25,6 +25,7 @@ export default function CyclesManager() {
   const [cycles, setCycles] = useState<AdminCycle[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [showForm, setShowForm] = useState(false)
+  const [editingId, setEditingId] = useState<string | null>(null)
   const [formData, setFormData] = useState<CycleFormData>(getDefaultForm)
   const [formError, setFormError] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -49,13 +50,26 @@ export default function CyclesManager() {
   }
 
   const handleAdd = () => {
+    setEditingId(null)
     setFormData(getDefaultForm())
+    setShowForm(true)
+    setFormError('')
+  }
+
+  const handleEdit = (cycle: AdminCycle) => {
+    setEditingId(cycle.id)
+    setFormData({
+      startAt: new Date(cycle.startAt).toISOString().slice(0, 16),
+      endAt: new Date(cycle.endAt).toISOString().slice(0, 16),
+      maxVotesPerUser: cycle.maxVotesPerUser,
+    })
     setShowForm(true)
     setFormError('')
   }
 
   const handleCancel = () => {
     setShowForm(false)
+    setEditingId(null)
     setFormData(getDefaultForm())
   }
 
@@ -79,20 +93,28 @@ export default function CyclesManager() {
     setFormError('')
 
     try {
-      await api.createCycle({
-        startAt: formData.startAt,
-        endAt: formData.endAt,
-        maxVotesPerUser: formData.maxVotesPerUser,
-      })
+      if (editingId) {
+        await api.updateCycle(editingId, {
+          startAt: formData.startAt,
+          endAt: formData.endAt,
+          maxVotesPerUser: formData.maxVotesPerUser,
+        })
+      } else {
+        await api.createCycle({
+          startAt: formData.startAt,
+          endAt: formData.endAt,
+          maxVotesPerUser: formData.maxVotesPerUser,
+        })
+      }
       await loadCycles()
       handleCancel()
     } catch (error: unknown) {
-      console.error('Failed to create cycle:', error)
+      console.error('Failed to save cycle:', error)
       if (error && typeof error === 'object' && 'response' in error) {
         const response = error.response as { data?: { error?: string } }
-        setFormError(response.data?.error || 'שגיאה ביצירת סבב')
+        setFormError(response.data?.error || 'שגיאה בשמירת סבב')
       } else {
-        setFormError('שגיאה ביצירת סבב')
+        setFormError('שגיאה בשמירת סבב')
       }
     } finally {
       setIsSubmitting(false)
@@ -107,6 +129,21 @@ export default function CyclesManager() {
       await loadCycles()
     } catch (error) {
       console.error('Failed to close cycle:', error)
+    }
+  }
+
+  const handleDelete = async (id: string) => {
+    if (!confirm('האם למחוק את סבב ההצבעה? פעולה זו תמחק גם את כל ההצבעות בסבב.')) return
+    
+    try {
+      await api.deleteCycle(id)
+      await loadCycles()
+    } catch (error: unknown) {
+      console.error('Failed to delete cycle:', error)
+      if (error && typeof error === 'object' && 'response' in error) {
+        const response = error.response as { data?: { error?: string } }
+        alert(response.data?.error || 'שגיאה במחיקת סבב')
+      }
     }
   }
 
@@ -161,7 +198,7 @@ export default function CyclesManager() {
       {/* Form */}
       {showForm && (
         <div className="admin-section">
-          <h3>סבב הצבעה חדש</h3>
+          <h3>{editingId ? 'עריכת סבב הצבעה' : 'סבב הצבעה חדש'}</h3>
           <form className="admin-form" onSubmit={handleSubmit}>
             <div className="admin-form-row">
               <div>
@@ -206,7 +243,7 @@ export default function CyclesManager() {
                 ביטול
               </button>
               <button type="submit" className="btn btn-primary" disabled={isSubmitting}>
-                {isSubmitting ? 'יוצר...' : 'צור סבב'}
+                {isSubmitting ? 'שומר...' : (editingId ? 'שמור שינויים' : 'צור סבב')}
               </button>
             </div>
           </form>
@@ -263,6 +300,12 @@ export default function CyclesManager() {
                       >
                         תוצאות
                       </button>
+                      <button
+                        className="btn btn-secondary"
+                        onClick={() => handleEdit(cycle)}
+                      >
+                        ערוך
+                      </button>
                       {cycle.status === 'active' && (
                         <button
                           className="btn btn-secondary danger"
@@ -271,6 +314,12 @@ export default function CyclesManager() {
                           סגור עכשיו
                         </button>
                       )}
+                      <button
+                        className="btn btn-secondary danger"
+                        onClick={() => handleDelete(cycle.id)}
+                      >
+                        מחק
+                      </button>
                     </div>
                   </td>
                 </tr>

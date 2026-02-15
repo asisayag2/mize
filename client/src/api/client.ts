@@ -164,6 +164,20 @@ class ApiClient {
     return response.data
   }
 
+  async updateCycle(id: string, data: {
+    startAt?: string
+    endAt?: string
+    maxVotesPerUser?: number
+  }) {
+    const response = await this.client.put(`/admin/cycles/${id}`, data)
+    return response.data
+  }
+
+  async deleteCycle(id: string) {
+    const response = await this.client.delete(`/admin/cycles/${id}`)
+    return response.data
+  }
+
   async getCycleResults(id: string) {
     const response = await this.client.get(`/admin/cycles/${id}/results`)
     return response.data
