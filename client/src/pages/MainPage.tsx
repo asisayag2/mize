@@ -21,8 +21,10 @@ export default function MainPage() {
   const contenders = useStore(state => state.contenders)
   const isLoadingContenders = useStore(state => state.isLoadingContenders)
   const activeCycle = useStore(state => state.activeCycle)
+  const voteStatus = useStore(state => state.voteStatus)
   const fetchConfig = useStore(state => state.fetchConfig)
   const fetchContenders = useStore(state => state.fetchContenders)
+  const fetchVoteStatus = useStore(state => state.fetchVoteStatus)
 
   const [videoModal, setVideoModal] = useState<{ isOpen: boolean; video: Video | null }>({
     isOpen: false,
@@ -36,7 +38,8 @@ export default function MainPage() {
   useEffect(() => {
     fetchConfig()
     fetchContenders()
-  }, [fetchConfig, fetchContenders])
+    fetchVoteStatus()
+  }, [fetchConfig, fetchContenders, fetchVoteStatus])
 
   const handleChangeName = () => {
     clearDisplayName()
@@ -84,7 +87,12 @@ export default function MainPage() {
           disabled={!activeCycle}
           onClick={() => activeCycle && navigate('/vote')}
         >
-          {activeCycle ? '🗳️ הצבע עכשיו' : '🗳️ אין הצבעה פעילה'}
+          {!activeCycle 
+            ? '🗳️ אין הצבעה פעילה' 
+            : voteStatus?.hasVoted 
+              ? '🔄 שנה את ההצבעה שלי'
+              : '🗳️ הצבע עכשיו'
+          }
         </button>
       </div>
 

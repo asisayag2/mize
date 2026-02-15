@@ -18,6 +18,7 @@ export default function VotePage() {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [success, setSuccess] = useState(false)
   const [error, setError] = useState('')
+  const [isChangingVote, setIsChangingVote] = useState(false)
 
   const activeContenders = contenders.filter(c => c.status === 'active')
   const maxVotes = activeCycle?.maxVotesPerUser || 3
@@ -26,6 +27,15 @@ export default function VotePage() {
     fetchContenders()
     fetchVoteStatus()
   }, [fetchContenders, fetchVoteStatus])
+
+  // Pre-select previous vote selections when changing vote
+  useEffect(() => {
+    if (voteStatus?.hasVoted && voteStatus.vote?.selections) {
+      const previousIds = voteStatus.vote.selections.map(s => s.id)
+      setSelectedIds(previousIds)
+      setIsChangingVote(true)
+    }
+  }, [voteStatus])
 
   // Redirect if no active cycle
   useEffect(() => {
@@ -80,18 +90,17 @@ export default function VotePage() {
         <div className="vote-container">
           <div className="vote-success">
             <span className="success-icon">🎉</span>
-            <h2>תודה שהצבעת!</h2>
-            <p>ההצבעה נקלטה בהצלחה</p>
-            {voteStatus?.vote && (
-              <div className="voted-selections">
-                <p>הבחירות שלך:</p>
-                <ul>
-                  {voteStatus.vote.selections.map(s => (
-                    <li key={s.id}>{s.nickname}</li>
-                  ))}
-                </ul>
-              </div>
-            )}
+            <h2>{isChangingVote ? 'ההצבעה עודכנה!' : 'תודה שהצבעת!'}</h2>
+            <p>{isChangingVote ? 'ההצבעה שלך עודכנה בהצלחה' : 'ההצבעה נקלטה בהצלחה'}</p>
+            <div className="voted-selections">
+              <p>הבחירות שלך:</p>
+              <ul>
+                {selectedIds.map(id => {
+                  const contender = contenders.find(c => c.id === id)
+                  return contender ? <li key={id}>{contender.nickname}</li> : null
+                })}
+              </ul>
+            </div>
             <button className="btn btn-primary" onClick={() => navigate('/app')}>
               חזרה לראשי
             </button>
@@ -101,32 +110,7 @@ export default function VotePage() {
     )
   }
 
-  // Already voted state - shown when returning to vote page after already voting
-  if (voteStatus?.hasVoted) {
-    return (
-      <div className="vote-page">
-        <div className="vote-container">
-          <div className="already-voted">
-            <span className="voted-icon">✓</span>
-            <h2>כבר הצבעת בסבב הזה</h2>
-            {voteStatus.vote && (
-              <div className="voted-selections">
-                <p>הבחירות שלך:</p>
-                <ul>
-                  {voteStatus.vote.selections.map(s => (
-                    <li key={s.id}>{s.nickname}</li>
-                  ))}
-                </ul>
-              </div>
-            )}
-            <button className="btn btn-primary" onClick={() => navigate('/app')}>
-              חזרה לראשי
-            </button>
-          </div>
-        </div>
-      </div>
-    )
-  }
+  // Note: "already voted" blocking screen removed - users can now change their vote
 
   return (
     <div className="vote-page">
@@ -136,11 +120,14 @@ export default function VotePage() {
           <button className="btn-back" onClick={() => navigate('/app')}>
             ← חזרה
           </button>
-          <h1>הצבעה</h1>
+          <h1>{isChangingVote ? 'שינוי הצבעה' : 'הצבעה'}</h1>
         </header>
 
         {/* Instructions */}
         <div className="vote-instructions">
+          {isChangingVote && (
+            <p className="change-vote-hint">הבחירות הקודמות שלך מסומנות. ניתן לשנות אותן.</p>
+          )}
           <p>בחר עד <strong>{maxVotes}</strong> מתמודדים</p>
           <p className="selection-count">
             נבחרו: {selectedIds.length} / {maxVotes}
@@ -191,7 +178,7 @@ export default function VotePage() {
             onClick={handleSubmit}
             disabled={isSubmitting || selectedIds.length === 0}
           >
-            {isSubmitting ? 'שולח...' : 'הצבע'}
+            {isSubmitting ? 'שולח...' : isChangingVote ? 'עדכן הצבעה' : 'הצבע'}
           </button>
         </div>
       </div>

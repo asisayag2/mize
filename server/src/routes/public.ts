@@ -399,22 +399,19 @@ export function publicRoutes(prisma: PrismaClient): Router {
         },
       });
 
-      if (existingVoteByToken) {
-        res.status(403).json({ error: 'כבר הצבעת במחזור הזה' });
-        return;
-      }
+      // Check if user already voted (by fingerprint) - for new votes only
+      if (!existingVoteByToken) {
+        const existingVoteByFingerprint = await prisma.vote.findFirst({
+          where: {
+            cycleId: activeCycle.id,
+            fingerprintHash,
+          },
+        });
 
-      // Check if user already voted (by fingerprint) - anti-cheat
-      const existingVoteByFingerprint = await prisma.vote.findFirst({
-        where: {
-          cycleId: activeCycle.id,
-          fingerprintHash,
-        },
-      });
-
-      if (existingVoteByFingerprint) {
-        res.status(403).json({ error: 'כבר הצבעת ממכשיר זה' });
-        return;
+        if (existingVoteByFingerprint) {
+          res.status(403).json({ error: 'כבר הצבעת ממכשיר זה' });
+          return;
+        }
       }
 
       // Validate all selections are active contenders (status = 'active')
@@ -431,8 +428,21 @@ export function publicRoutes(prisma: PrismaClient): Router {
         return;
       }
 
-      // Create vote with selections in a transaction
+      // Create or update vote in a transaction
+      const isUpdate = !!existingVoteByToken;
+      
       const vote = await prisma.$transaction(async (tx) => {
+        // If updating, delete the old vote and its selections
+        if (existingVoteByToken) {
+          await tx.voteSelection.deleteMany({
+            where: { voteId: existingVoteByToken.id },
+          });
+          await tx.vote.delete({
+            where: { id: existingVoteByToken.id },
+          });
+        }
+
+        // Create new vote
         const newVote = await tx.vote.create({
           data: {
             cycleId: activeCycle.id,
@@ -454,8 +464,9 @@ export function publicRoutes(prisma: PrismaClient): Router {
 
       res.json({
         success: true,
-        message: 'ההצבעה נקלטה בהצלחה!',
+        message: isUpdate ? 'ההצבעה עודכנה בהצלחה!' : 'ההצבעה נקלטה בהצלחה!',
         voteId: vote.id,
+        updated: isUpdate,
       });
     } catch (error) {
       console.error('Error submitting vote:', error);

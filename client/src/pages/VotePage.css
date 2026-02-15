@@ -60,6 +60,15 @@
   margin-top: var(--spacing-sm);
 }
 
+.change-vote-hint {
+  background: rgba(255, 175, 95, 0.15);
+  color: var(--color-accent-secondary) !important;
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-radius: var(--radius-md);
+  margin-bottom: var(--spacing-sm);
+  font-weight: 500;
+}
+
 /* Grid */
 .vote-grid {
   display: grid;
