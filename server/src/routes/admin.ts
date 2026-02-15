@@ -284,7 +284,7 @@ export function adminRoutes(prisma: PrismaClient): Router {
 
   /**
    * GET /api/admin/cycles
-   * List all vote cycles
+   * List all vote cycles with computed status
    */
   router.get('/cycles', async (_req: Request, res: Response) => {
     try {
@@ -297,7 +297,36 @@ export function adminRoutes(prisma: PrismaClient): Router {
         },
       });
 
-      res.json(cycles);
+      const now = new Date();
+      
+      // Transform to include computed status and voteCount
+      const result = cycles.map((cycle) => {
+        let status: 'scheduled' | 'active' | 'ended' | 'closed';
+        
+        if (cycle.closedAt) {
+          status = 'closed';
+        } else if (new Date(cycle.startAt) > now) {
+          status = 'scheduled';
+        } else if (new Date(cycle.endAt) <= now) {
+          status = 'ended';
+        } else {
+          status = 'active';
+        }
+
+        return {
+          id: cycle.id,
+          startAt: cycle.startAt,
+          endAt: cycle.endAt,
+          closedAt: cycle.closedAt,
+          effectiveEndAt: cycle.closedAt || cycle.endAt,
+          maxVotesPerUser: cycle.maxVotesPerUser,
+          voteCount: cycle._count.votes,
+          status,
+          createdAt: cycle.createdAt,
+        };
+      });
+
+      res.json(result);
     } catch (error) {
       console.error('Error fetching cycles:', error);
       res.status(500).json({ error: 'שגיאת שרת' });

@@ -2,6 +2,11 @@
   /* No specific styles needed, uses admin common styles */
 }
 
+.header-actions {
+  display: flex;
+  gap: var(--spacing-sm);
+}
+
 .closed-at {
   font-size: 0.75rem;
   color: var(--color-text-muted);

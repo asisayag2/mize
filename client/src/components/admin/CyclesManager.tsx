@@ -56,6 +56,51 @@ export default function CyclesManager() {
     setFormError('')
   }
 
+  const handleStartNow = async () => {
+    // Check if there's already an active cycle
+    const activeCycle = cycles.find(c => c.status === 'active')
+    if (activeCycle) {
+      alert('יש כבר סבב הצבעה פעיל. יש לסגור אותו לפני התחלת סבב חדש.')
+      return
+    }
+
+    const hours = prompt('כמה שעות יימשך הסבב?', '24')
+    if (!hours) return
+    
+    const duration = parseInt(hours)
+    if (isNaN(duration) || duration < 1) {
+      alert('נא להזין מספר שעות תקין')
+      return
+    }
+
+    const maxVotes = prompt('כמה הצבעות מקסימום למשתמש?', '3')
+    if (!maxVotes) return
+    
+    const maxVotesNum = parseInt(maxVotes)
+    if (isNaN(maxVotesNum) || maxVotesNum < 1) {
+      alert('נא להזין מספר תקין')
+      return
+    }
+
+    try {
+      const now = new Date()
+      const end = new Date(now.getTime() + duration * 60 * 60 * 1000)
+      
+      await api.createCycle({
+        startAt: now.toISOString(),
+        endAt: end.toISOString(),
+        maxVotesPerUser: maxVotesNum,
+      })
+      await loadCycles()
+    } catch (error: unknown) {
+      console.error('Failed to start cycle:', error)
+      if (error && typeof error === 'object' && 'response' in error) {
+        const response = error.response as { data?: { error?: string } }
+        alert(response.data?.error || 'שגיאה בהתחלת סבב')
+      }
+    }
+  }
+
   const handleEdit = (cycle: AdminCycle) => {
     setEditingId(cycle.id)
     setFormData({
@@ -190,9 +235,14 @@ export default function CyclesManager() {
       {/* Header */}
       <div className="admin-section-header">
         <h2 className="admin-section-title">סבבי הצבעה</h2>
-        <button className="btn btn-primary" onClick={handleAdd}>
-          + צור סבב חדש
-        </button>
+        <div className="header-actions">
+          <button className="btn btn-primary" onClick={handleStartNow}>
+            ▶ התחל סבב עכשיו
+          </button>
+          <button className="btn btn-secondary" onClick={handleAdd}>
+            + צור סבב מתוזמן
+          </button>
+        </div>
       </div>
 
       {/* Form */}
