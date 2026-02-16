@@ -1,5 +1,5 @@
 import { useEffect, useState, useCallback } from 'react'
-import { useParams, useNavigate } from 'react-router-dom'
+import { useParams, useNavigate, useSearchParams } from 'react-router-dom'
 import { useStore } from '../store/useStore'
 import { api } from '../api/client'
 import { getImageUrl } from '../utils/cloudinary'
@@ -12,6 +12,9 @@ import './ContenderPage.css'
 export default function ContenderPage() {
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
+  const fromVoteNow = searchParams.get('from') === 'vote-now'
+  
   const cloudName = useStore(state => state.cloudName)
   const showLikeButton = useStore(state => state.showLikeButton)
   const fetchConfig = useStore(state => state.fetchConfig)
@@ -61,7 +64,7 @@ export default function ContenderPage() {
   }, [fetchConfig, fetchContender])
 
   const handleBack = () => {
-    navigate('/app')
+    navigate(fromVoteNow ? '/vote-now' : '/app')
   }
 
   const handleOpenVideo = (video: Video) => {
@@ -138,7 +141,7 @@ export default function ContenderPage() {
     <div className="contender-page">
       {/* Back button */}
       <button className="back-button" onClick={handleBack}>
-        → חזרה
+        → {fromVoteNow ? 'חזרה להצבעה' : 'חזרה'}
       </button>
 
       {/* Contender name - top */}
