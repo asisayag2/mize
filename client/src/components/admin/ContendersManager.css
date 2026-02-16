@@ -157,3 +157,53 @@
   color: var(--color-text-secondary);
 }
 
+/* Guesses table */
+.guesses-table {
+  width: 100%;
+}
+
+.guesses-table th:last-child,
+.guesses-table td:last-child {
+  width: 100px;
+  text-align: center;
+}
+
+.guess-actions {
+  display: flex;
+  gap: var(--spacing-xs);
+  justify-content: center;
+}
+
+.guess-edit-inline {
+  display: flex;
+  gap: var(--spacing-xs);
+  align-items: center;
+}
+
+.guess-edit-inline input {
+  flex: 1;
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-bg-primary);
+  color: var(--color-text-primary);
+  font-family: var(--font-family);
+  font-size: 0.875rem;
+}
+
+.btn-small {
+  padding: var(--spacing-xs) var(--spacing-sm);
+  font-size: 0.75rem;
+  min-width: auto;
+}
+
+.btn-danger {
+  background: transparent;
+  border: 1px solid var(--color-error);
+  color: var(--color-error);
+}
+
+.btn-danger:hover {
+  background: rgba(239, 68, 68, 0.1);
+}
+

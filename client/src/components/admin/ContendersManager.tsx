@@ -31,6 +31,8 @@ export default function ContendersManager() {
   
   // Stats modal
   const [statsModal, setStatsModal] = useState<ContenderStats | null>(null)
+  const [editingGuessId, setEditingGuessId] = useState<string | null>(null)
+  const [editingGuessText, setEditingGuessText] = useState('')
   
   // Preview states
   const [showImagePreview, setShowImagePreview] = useState(false)
@@ -151,6 +153,56 @@ export default function ContendersManager() {
       setStatsModal(stats)
     } catch (error) {
       console.error('Failed to load stats:', error)
+    }
+  }
+
+  const handleStartEditGuess = (guessId: string, currentText: string) => {
+    setEditingGuessId(guessId)
+    setEditingGuessText(currentText)
+  }
+
+  const handleCancelEditGuess = () => {
+    setEditingGuessId(null)
+    setEditingGuessText('')
+  }
+
+  const handleSaveGuess = async (guessId: string) => {
+    if (!editingGuessText.trim()) return
+    
+    try {
+      await api.updateGuess(guessId, editingGuessText.trim())
+      // Update local state
+      if (statsModal) {
+        setStatsModal({
+          ...statsModal,
+          guesses: statsModal.guesses.map(g =>
+            g.id === guessId ? { ...g, guessText: editingGuessText.trim() } : g
+          ),
+        })
+      }
+      setEditingGuessId(null)
+      setEditingGuessText('')
+    } catch (error) {
+      console.error('Failed to update guess:', error)
+    }
+  }
+
+  const handleDeleteGuess = async (guessId: string) => {
+    if (!confirm('האם למחוק את הניחוש?')) return
+    
+    try {
+      await api.deleteGuess(guessId)
+      // Update local state
+      if (statsModal) {
+        setStatsModal({
+          ...statsModal,
+          guesses: statsModal.guesses.filter(g => g.id !== guessId),
+        })
+      }
+      // Also update contenders list to reflect new guess count
+      loadContenders()
+    } catch (error) {
+      console.error('Failed to delete guess:', error)
     }
   }
 
@@ -448,20 +500,60 @@ export default function ContendersManager() {
               {statsModal.guesses.length === 0 ? (
                 <p className="admin-empty">אין ניחושים</p>
               ) : (
-                <table className="admin-table">
+                <table className="admin-table guesses-table">
                   <thead>
                     <tr>
                       <th>משתמש</th>
                       <th>ניחוש</th>
                       <th>תאריך</th>
+                      <th>פעולות</th>
                     </tr>
                   </thead>
                   <tbody>
                     {statsModal.guesses.map(guess => (
                       <tr key={guess.id}>
                         <td>{guess.displayName}</td>
-                        <td>{guess.guessText}</td>
+                        <td>
+                          {editingGuessId === guess.id ? (
+                            <div className="guess-edit-inline">
+                              <input
+                                type="text"
+                                value={editingGuessText}
+                                onChange={e => setEditingGuessText(e.target.value)}
+                                onKeyDown={e => {
+                                  if (e.key === 'Enter') handleSaveGuess(guess.id)
+                                  if (e.key === 'Escape') handleCancelEditGuess()
+                                }}
+                                autoFocus
+                              />
+                              <button className="btn btn-small btn-primary" onClick={() => handleSaveGuess(guess.id)}>✓</button>
+                              <button className="btn btn-small btn-secondary" onClick={handleCancelEditGuess}>✕</button>
+                            </div>
+                          ) : (
+                            guess.guessText
+                          )}
+                        </td>
                         <td>{new Date(guess.createdAt).toLocaleString('he-IL')}</td>
+                        <td className="guess-actions">
+                          {editingGuessId !== guess.id && (
+                            <>
+                              <button
+                                className="btn btn-small btn-secondary"
+                                onClick={() => handleStartEditGuess(guess.id, guess.guessText)}
+                                title="ערוך"
+                              >
+                                ✏️
+                              </button>
+                              <button
+                                className="btn btn-small btn-danger"
+                                onClick={() => handleDeleteGuess(guess.id)}
+                                title="מחק"
+                              >
+                                🗑️
+                              </button>
+                            </>
+                          )}
+                        </td>
                       </tr>
                     ))}
                   </tbody>

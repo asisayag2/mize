@@ -145,6 +145,16 @@ class ApiClient {
     return response.data
   }
 
+  async updateGuess(id: string, guessText: string) {
+    const response = await this.client.put(`/admin/guesses/${id}`, { guessText })
+    return response.data
+  }
+
+  async deleteGuess(id: string) {
+    const response = await this.client.delete(`/admin/guesses/${id}`)
+    return response.data
+  }
+
   async getAdminCycles() {
     const response = await this.client.get('/admin/cycles')
     return response.data

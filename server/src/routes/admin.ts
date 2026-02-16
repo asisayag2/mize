@@ -280,6 +280,53 @@ export function adminRoutes(prisma: PrismaClient): Router {
     }
   });
 
+  // ==================== GUESSES ====================
+
+  /**
+   * PUT /api/admin/guesses/:id
+   * Update a guess (edit guessText)
+   */
+  router.put('/guesses/:id', async (req: Request, res: Response) => {
+    try {
+      const { id } = req.params;
+      const { guessText } = req.body;
+
+      if (!guessText || typeof guessText !== 'string' || guessText.trim().length === 0) {
+        res.status(400).json({ error: 'נא להזין טקסט ניחוש' });
+        return;
+      }
+
+      const guess = await prisma.guess.update({
+        where: { id },
+        data: { guessText: guessText.trim() },
+      });
+
+      res.json(guess);
+    } catch (error) {
+      console.error('Error updating guess:', error);
+      res.status(500).json({ error: 'שגיאת שרת' });
+    }
+  });
+
+  /**
+   * DELETE /api/admin/guesses/:id
+   * Delete a guess
+   */
+  router.delete('/guesses/:id', async (req: Request, res: Response) => {
+    try {
+      const { id } = req.params;
+
+      await prisma.guess.delete({
+        where: { id },
+      });
+
+      res.json({ success: true });
+    } catch (error) {
+      console.error('Error deleting guess:', error);
+      res.status(500).json({ error: 'שגיאת שרת' });
+    }
+  });
+
   // ==================== VOTE CYCLES ====================
 
   /**
