@@ -1,11 +1,10 @@
 import { useEffect, useState } from 'react'
-import { useNavigate, Link } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { useStore } from '../store/useStore'
 import { getImageUrl } from '../utils/cloudinary'
 import './DirectVotePage.css'
 
 export default function DirectVotePage() {
-  const navigate = useNavigate()
   const displayName = useStore(state => state.displayName)
   const contenders = useStore(state => state.contenders)
   const cloudName = useStore(state => state.cloudName)
