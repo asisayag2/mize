@@ -36,18 +36,24 @@ export function publicRoutes(prisma: PrismaClient): Router {
         },
       });
 
-      // Get app config (create if doesn't exist)
-      const appConfig = await prisma.appConfig.upsert({
-        where: { id: 'singleton' },
-        create: { id: 'singleton', showLikeButton: true },
-        update: {},
-      });
+      // Get app config (create if doesn't exist) - fail gracefully if table doesn't exist
+      let showLikeButton = true;
+      try {
+        const appConfig = await prisma.appConfig.upsert({
+          where: { id: 'singleton' },
+          create: { id: 'singleton', showLikeButton: true },
+          update: {},
+        });
+        showLikeButton = appConfig.showLikeButton;
+      } catch (configError) {
+        console.warn('AppConfig table may not exist yet, using defaults:', configError);
+      }
 
       res.json({
         activeCycle,
         hasActiveCycle: !!activeCycle,
         cloudName: process.env.CLOUDINARY_CLOUD_NAME || '',
-        showLikeButton: appConfig.showLikeButton,
+        showLikeButton,
       });
     } catch (error) {
       console.error('Error fetching config:', error);

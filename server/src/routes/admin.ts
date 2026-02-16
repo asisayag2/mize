@@ -88,8 +88,9 @@ export function adminRoutes(prisma: PrismaClient): Router {
       });
       res.json(config);
     } catch (error) {
-      console.error('Error fetching app config:', error);
-      res.status(500).json({ error: 'שגיאת שרת' });
+      // Table may not exist yet - return defaults
+      console.warn('AppConfig table may not exist, returning defaults:', error);
+      res.json({ id: 'singleton', showLikeButton: true });
     }
   });
 
@@ -109,8 +110,9 @@ export function adminRoutes(prisma: PrismaClient): Router {
 
       res.json(config);
     } catch (error) {
-      console.error('Error updating app config:', error);
-      res.status(500).json({ error: 'שגיאת שרת' });
+      // Table may not exist yet
+      console.error('Error updating app config (table may not exist):', error);
+      res.status(500).json({ error: 'נא להריץ prisma db push בשרת כדי ליצור את טבלת ההגדרות' });
     }
   });
 
