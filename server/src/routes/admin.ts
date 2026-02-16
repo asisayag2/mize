@@ -73,6 +73,47 @@ export function adminRoutes(prisma: PrismaClient): Router {
   // All routes below require admin authentication
   router.use(requireAdmin);
 
+  // ==================== APP CONFIG ====================
+
+  /**
+   * GET /api/admin/config
+   * Get app configuration
+   */
+  router.get('/config', async (_req: Request, res: Response) => {
+    try {
+      const config = await prisma.appConfig.upsert({
+        where: { id: 'singleton' },
+        create: { id: 'singleton', showLikeButton: true },
+        update: {},
+      });
+      res.json(config);
+    } catch (error) {
+      console.error('Error fetching app config:', error);
+      res.status(500).json({ error: 'שגיאת שרת' });
+    }
+  });
+
+  /**
+   * PUT /api/admin/config
+   * Update app configuration
+   */
+  router.put('/config', async (req: Request, res: Response) => {
+    try {
+      const { showLikeButton } = req.body;
+
+      const config = await prisma.appConfig.upsert({
+        where: { id: 'singleton' },
+        create: { id: 'singleton', showLikeButton: showLikeButton ?? true },
+        update: { showLikeButton: showLikeButton ?? true },
+      });
+
+      res.json(config);
+    } catch (error) {
+      console.error('Error updating app config:', error);
+      res.status(500).json({ error: 'שגיאת שרת' });
+    }
+  });
+
   // ==================== CONTENDERS ====================
 
   /**

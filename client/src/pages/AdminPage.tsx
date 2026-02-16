@@ -4,9 +4,10 @@ import { useStore } from '../store/useStore'
 import AdminLogin from '../components/admin/AdminLogin'
 import ContendersManager from '../components/admin/ContendersManager'
 import CyclesManager from '../components/admin/CyclesManager'
+import SettingsManager from '../components/admin/SettingsManager'
 import './AdminPage.css'
 
-type Tab = 'contenders' | 'cycles'
+type Tab = 'contenders' | 'cycles' | 'settings'
 
 export default function AdminPage() {
   const fetchConfig = useStore(state => state.fetchConfig)
@@ -87,12 +88,19 @@ export default function AdminPage() {
         >
           ניהול סבבי הצבעה
         </button>
+        <button
+          className={`admin-tab ${activeTab === 'settings' ? 'active' : ''}`}
+          onClick={() => setActiveTab('settings')}
+        >
+          הגדרות
+        </button>
       </div>
 
       {/* Content */}
       <main className="admin-content">
         {activeTab === 'contenders' && <ContendersManager />}
         {activeTab === 'cycles' && <CyclesManager />}
+        {activeTab === 'settings' && <SettingsManager />}
       </main>
     </div>
   )

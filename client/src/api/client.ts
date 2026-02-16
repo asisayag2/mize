@@ -155,6 +155,16 @@ class ApiClient {
     return response.data
   }
 
+  async getAppConfig() {
+    const response = await this.client.get('/admin/config')
+    return response.data
+  }
+
+  async updateAppConfig(data: { showLikeButton?: boolean }) {
+    const response = await this.client.put('/admin/config', data)
+    return response.data
+  }
+
   async getAdminCycles() {
     const response = await this.client.get('/admin/cycles')
     return response.data

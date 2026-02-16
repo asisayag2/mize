@@ -18,6 +18,7 @@ export default function ContenderCard({
 }: ContenderCardProps) {
   const navigate = useNavigate()
   const cloudName = useStore(state => state.cloudName)
+  const showLikeButton = useStore(state => state.showLikeButton)
   const loveContender = useStore(state => state.loveContender)
   const [isLoving, setIsLoving] = useState(false)
 
@@ -67,7 +68,7 @@ export default function ContenderCard({
           <div className="contender-inactive-badge">הודח</div>
         )}
         {/* Love counter on image */}
-        {contender.loveCount > 0 && (
+        {showLikeButton && contender.loveCount > 0 && (
           <div className="love-counter-badge">
             <span className="love-counter-text">{contender.loveCount} אנשים ❤️ אותי</span>
           </div>
@@ -106,14 +107,16 @@ export default function ContenderCard({
 
         {/* Actions */}
         <div className="contender-actions">
-          {/* Love button (toggle) */}
-          <button
-            className={`btn btn-love ${contender.hasLoved ? 'loved' : ''}`}
-            onClick={handleLove}
-            disabled={isLoving}
-          >
-            {contender.hasLoved ? '❤️' : '🤍'} {contender.hasLoved ? 'אהבתי!' : 'אהבתי'}
-          </button>
+          {/* Love button (toggle) - only if enabled */}
+          {showLikeButton && (
+            <button
+              className={`btn btn-love ${contender.hasLoved ? 'loved' : ''}`}
+              onClick={handleLove}
+              disabled={isLoving}
+            >
+              {contender.hasLoved ? '❤️' : '🤍'} {contender.hasLoved ? 'אהבתי!' : 'אהבתי'}
+            </button>
+          )}
 
           {/* Guess button - only for active contenders */}
           {contender.status === 'active' && (

@@ -36,10 +36,18 @@ export function publicRoutes(prisma: PrismaClient): Router {
         },
       });
 
+      // Get app config (create if doesn't exist)
+      const appConfig = await prisma.appConfig.upsert({
+        where: { id: 'singleton' },
+        create: { id: 'singleton', showLikeButton: true },
+        update: {},
+      });
+
       res.json({
         activeCycle,
         hasActiveCycle: !!activeCycle,
         cloudName: process.env.CLOUDINARY_CLOUD_NAME || '',
+        showLikeButton: appConfig.showLikeButton,
       });
     } catch (error) {
       console.error('Error fetching config:', error);

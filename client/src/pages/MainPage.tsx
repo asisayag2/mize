@@ -113,6 +113,7 @@ export default function MainPage() {
             grabCursor
             centeredSlides
             slidesPerView="auto"
+            initialSlide={Math.floor(contenders.length / 2)}
             coverflowEffect={{
               rotate: 5,
               stretch: 0,

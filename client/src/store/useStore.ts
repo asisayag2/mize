@@ -10,6 +10,7 @@ interface AppState {
   // Config
   cloudName: string
   activeCycle: VoteCycle | null
+  showLikeButton: boolean
   
   // Contenders
   contenders: Contender[]
@@ -42,6 +43,7 @@ export const useStore = create<AppState>((set, get) => ({
   deviceToken: null,
   cloudName: '',
   activeCycle: null,
+  showLikeButton: true,
   contenders: [],
   isLoadingContenders: false,
   voteStatus: null,
@@ -82,6 +84,7 @@ export const useStore = create<AppState>((set, get) => ({
       set({ 
         activeCycle: data.activeCycle,
         cloudName: data.cloudName,
+        showLikeButton: data.showLikeButton ?? true,
       })
       
       // Save device token if returned

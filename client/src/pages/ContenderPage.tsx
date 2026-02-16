@@ -13,6 +13,7 @@ export default function ContenderPage() {
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
   const cloudName = useStore(state => state.cloudName)
+  const showLikeButton = useStore(state => state.showLikeButton)
   const fetchConfig = useStore(state => state.fetchConfig)
   const loveContender = useStore(state => state.loveContender)
   
@@ -164,15 +165,17 @@ export default function ContenderPage() {
             </div>
           )}
           
-          {/* Love button overlay - bottom left */}
-          <button
-            className={`love-button ${contender.hasLoved ? 'loved' : ''}`}
-            onClick={handleLove}
-            disabled={isLoving}
-          >
-            <span className="love-icon">{contender.hasLoved ? '❤️' : '🤍'}</span>
-            <span className="love-count">{contender.loveCount}</span>
-          </button>
+          {/* Love button overlay - bottom left (only if enabled) */}
+          {showLikeButton && (
+            <button
+              className={`love-button ${contender.hasLoved ? 'loved' : ''}`}
+              onClick={handleLove}
+              disabled={isLoving}
+            >
+              <span className="love-icon">{contender.hasLoved ? '❤️' : '🤍'}</span>
+              <span className="love-count">{contender.loveCount}</span>
+            </button>
+          )}
 
           {/* Videos overlay - bottom, left to right (desktop only) */}
           {contender.videos.length > 0 && (
