@@ -40,6 +40,7 @@ export interface VoteStatus {
 export interface AppConfig {
   activeCycle: VoteCycle | null
   cloudName: string
+  showLikeButton: boolean
 }
 
 // Admin types
