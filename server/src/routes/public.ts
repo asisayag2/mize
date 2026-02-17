@@ -413,20 +413,9 @@ export function publicRoutes(prisma: PrismaClient): Router {
         },
       });
 
-      // Check if user already voted (by fingerprint) - for new votes only
-      if (!existingVoteByToken) {
-        const existingVoteByFingerprint = await prisma.vote.findFirst({
-          where: {
-            cycleId: activeCycle.id,
-            fingerprintHash,
-          },
-        });
-
-        if (existingVoteByFingerprint) {
-          res.status(403).json({ error: 'כבר הצבעת ממכשיר זה' });
-          return;
-        }
-      }
+      // Note: Fingerprint check disabled - was causing false positives for users
+      // with similar devices (same browser/OS/screen resolution).
+      // Relying on deviceToken (unique per browser localStorage) instead.
 
       // Validate all selections are active contenders (status = 'active')
       const validContenders = await prisma.contender.findMany({
